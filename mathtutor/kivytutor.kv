@@ -1,0 +1,71 @@
+<WrappedLabel@Label>:
+	size_hint_y: None
+	height: self.texture_size[1] + (self.texture_size[1] / 2)
+	markup: True
+
+
+
+<KivyTutorRoot>:
+	orientation: "vertical"
+
+	ActionBar:
+		ActionView:
+			ActionPrevious:
+				title: ''
+				with_previous: False
+			ActionOverflow:
+				ActionButton:
+					text: "Settings"
+					on_press: app.open_settings()
+	
+	ScreenManager:
+		id: kivy_screen_manager
+		StartScreen:
+			name: "start_screen"
+		AboutScreen:
+			id: about_screen
+			name: "about screen"
+
+
+<StartScreen@Screen>:
+	BoxLayout:
+		# Settings
+		orientation: 'vertical'
+		padding: root.width * .02, root.height * .02
+		spacing: min(root.width, root.height) * .02
+
+		WrappedLabel:
+			text: "[b]Kivy Math Tutor[/b]"
+			font_size: min(root.height, root.width) / 10
+			
+		Button:
+			text: "Addition"
+		Button:
+			text: "Subtraction"
+		Button:
+			text: "Multiplication"
+		Button:
+			text: "Division"
+		Button:
+			text: "Mix!"
+		Button:
+			text: "About this App"
+			on_release: app.root.changeScreen(self.text.lower())
+
+<AboutScreen@Screen>:
+	BoxLayout:
+		padding: root.width * .02, root.height * .02
+		Label:
+			text: app.getText()
+			halign: "center"
+			markup: True
+			font_size: root.height / 20
+			text_size: self.width, None
+			center_y: .5
+			on_ref_press: app.on_ref_press(*args)
+
+
+
+
+
+
