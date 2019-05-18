@@ -1,0 +1,68 @@
+#:import COLOR kivy.utils.get_color_from_hex
+#:set RED "#F94A69"
+#:set GREEN "#06A5AB"
+
+<WrappedLabel@Label>:
+    size_hint_y: None
+    height: self.texture_size[1] + (self.texture_size[1] / 2)
+    markup: True
+
+<Botao@Button>:
+    font_size: self.height / 4
+
+<GerenciadorRoot>:
+    orientation: 'vertical'
+
+    ActionBar:
+        ActionView:
+            ActionPrevious:
+                title: ''
+                with_previous: False
+            ActionOverflow:
+                ActionButton:
+                    text: "Settings"
+                    on_press: app.open_settings()
+
+    ScreenManager:
+        id: screen_manager
+        StartScreen:
+            name: "start_screen"
+        PedidosScreen:
+            id: pedidos_screen
+            name: "pedidos_screen"
+        # MathScreen:
+        #     id: math_screen
+        #     name: "math_screen"
+
+<StartScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: root.width * .02, root.height * .02
+        spacing: min(root.width, root.height) * .02
+
+        WrappedLabel:
+            text: "[b]Gerenciador de Pedidos[/b]"
+            font_size: min(root.height, root.width) / 10
+
+        Botao:
+            text: "Anotar Pedido"
+            background_normal: ''
+            background_color: COLOR(RED)
+            on_release: app.root.changeScreen(self.text.lower())
+        Botao:
+            text: "Listar Pedidos"
+        Botao:
+            text: "Clientes"
+        Botao:
+            text: "Cardápio"
+
+<PedidosScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        BoxLayout:
+            orientation: 'horizontal'
+            Label:
+                text: "Cliente"
+            Label:
+                text: "[b]Nome do cliente[/b]"
+                markup: True
