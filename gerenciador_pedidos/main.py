@@ -36,11 +36,12 @@ class GerenciadorRoot(BoxLayout):
 class GerenciadorApp(App):
     """Objeto App"""
 
+    # pedidos_screen = ObjectProperty(None)
+
     def __init__(self, **kwargs):
         super(GerenciadorApp, self).__init__(**kwargs)
         # chama a funcao checaTecla sempre que uma tecla eh pressionada
         Window.bind(on_keyboard=self.checaTecla)
-        self.lista_clientes = "Ana Maria, Josélia, Fernanda, Carlos".split(',')
         self.lista_cardapio = "Tradicional, Ameixa, Bolo de Maçã".split(',')
 
     def build(self):
@@ -56,8 +57,52 @@ class GerenciadorApp(App):
         return f'{now.day}/{now.month}/{now.year}'
 
     def gravarPedido(self):
-        print("TODO: Gravar pedido!")
+        cliente = self.root.ids.pedidos_screen.ids.cliente.text
+
+        conn = sqlite3.connect('data/database.sqlite3')
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM clientes WHERE name = ?", (cliente,))
+        id_cliente = cursor.fetchone()[0]
+        conn.close()
+
+        pedido = self.root.ids.pedidos_screen.ids.pedido.text
+        data = self.root.ids.pedidos_screen.ids.data.text
+        quantidade = self.root.ids.pedidos_screen.ids.quantidade.text
+        obs = self.root.ids.pedidos_screen.ids.observacao.text
+
+        conn = sqlite3.connect('data/database.sqlite3')
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO pedidos "
+                       "(id_cliente,pedido,data_entrega,"
+                       "quantidade,observacoes) "
+                       "VALUES (?, ?, ?, ?, ?)",
+                       (id_cliente, pedido, data, quantidade, obs)
+                       )
+        conn.commit()
+        conn.close()
+
+        # print(query)
         self.root.botaoVoltar()
+
+    def getClientes(self):
+        conn = sqlite3.connect('data/database.sqlite3')
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM clientes")
+        resultados = cursor.fetchall()
+        lista_clientes = []
+        for resultado in resultados:
+            for nome in resultado:
+                lista_clientes.append(nome)
+        conn.close()
+        return lista_clientes
+
+
+############################################################################
+# class PedidosScreen(Screen):
+#     """docstring for PedidosScreen"""
+
+#     def __init__(self, **kwargs):
+#         super(PedidosScreen, self).__init__(**kwargs)
 
 
 if __name__ == '__main__':

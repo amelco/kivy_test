@@ -34,9 +34,9 @@
         PedidosScreen:
             id: pedidos_screen
             name: "pedidos_screen"
-        # MathScreen:
-        #     id: math_screen
-        #     name: "math_screen"
+        ListaPedidosScreen:
+            id: listaPedidos_screen
+            name: "listaPedidos_screen"
 
 <StartScreen@Screen>:
     BoxLayout:
@@ -68,14 +68,16 @@
             LabelMedio:
                 text: "Cliente"
             Spinner:
+                id: cliente
                 text: '---'
                 font_size: self.height / 4
-                values: app.lista_clientes
+                values: app.getClientes()
 
         BoxLayout:
             LabelMedio:
                 text: "Pedido"
             Spinner:
+                id: pedido
                 text: '---'
                 font_size: self.height / 4
                 values: app.lista_cardapio
@@ -84,11 +86,34 @@
             LabelMedio:
                 text: "Data de entrega"
             TextInput:
-                font_size: self.height / 4
-                hint_text: app.getDate()
+                id: data
+                font_size: self.height / 3
+                text: app.getDate()
                 multiline: False
                 padding_x: self.width / 4
                 padding_y: self.height / 4
+
+        BoxLayout:
+            LabelMedio:
+                text: "Quantidade"
+            TextInput:
+                id: quantidade
+                font_size: self.height / 3
+                text: '1'
+                multiline: False
+                padding_x: self.width / 4
+                padding_y: self.height / 4
+
+        BoxLayout:
+            LabelMedio:
+                text: "Observação"
+            TextInput:
+                id: observacao
+                font_size: self.height / 4
+                hint_text: "Observação sobre o pedido"
+                text: "TESTE OBSERVACAO"
+                # padding_x: self.width / 4
+                # padding_y: self.height / 4
 
         LabelMedio:
             text: ""
