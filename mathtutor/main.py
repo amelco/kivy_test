@@ -7,6 +7,7 @@ from kivy.properties import ObjectProperty
 from arithmetic import Arithmetic
 
 import webbrowser
+import random
 
 
 #############################################################################
@@ -19,11 +20,12 @@ class KivyTutorRoot(BoxLayout):
         super(KivyTutorRoot, self).__init__(**kwargs)
         # List of previous screens
         self.screen_list = []
+        self.is_mix = False
 
     def changeScreen(self, next_screen):
-        # operations = ("addition subtraction division "
-        #               "multiplication division".split())
-        # question = None
+        operations = ("addition subtraction division "
+                      "multiplication division".split())
+        question = None
 
         if self.ids.kivy_screen_manager.current not in self.screen_list:
             self.screen_list.append(self.ids.kivy_screen_manager.current)
@@ -31,9 +33,29 @@ class KivyTutorRoot(BoxLayout):
         if next_screen == "about this app":
             self.ids.kivy_screen_manager.current = "about screen"
         else:
-
-            self.math_screen.question_text.text = next_screen
+            if next_screen == "mix!":
+                self.is_mix = True
+                index = random.randint(0, len(operations - 1))
+                next_screen = operations[index]
+            else:
+                self.is_mix = False
+            for operation in operations:
+                if next_screen == operation:
+                    question = f"self.math_screen.get_{operation}_question"
+            self.math_screen.question_text.text = KivyTutorRoot.prepQuestion(
+                eval(question) if question is not None else None
+            )
             self.ids.kivy_screen_manager.current = "math_screen"
+
+    @staticmethod
+    def prepQuestion(question):
+        """Prepara uma quest~ao com markup"""
+        if question is None:
+            return "ERROR"
+        text_list = question.split()
+        text_list.insert(2, "[b]")
+        text_list.insert(len(text_list), "[/b]")
+        return " ".join(text_list)
 
     def onBackButton(self):
         # check if there are any screen to go back to
@@ -74,8 +96,7 @@ class KivyTutorApp(App):
     def getText(self):
         return ("Hey there!\nThis App was built using [b][ref=kivy]kivy"
                 "[/ref][/b]\nFeel free to look at the source code "
-                "[b][ref=source]here[/ref][/b].\nThis app is my first "
-                "complete Android App and has the "
+                "[b][ref=source]here[/ref][/b].\nThis app has the "
                 "[b][ref=mit]MIT License[/ref][/b].\n")
 
     def on_ref_press(self, instace, ref):
