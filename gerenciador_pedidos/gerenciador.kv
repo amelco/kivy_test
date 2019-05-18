@@ -7,6 +7,10 @@
     height: self.texture_size[1] + (self.texture_size[1] / 2)
     markup: True
 
+<LabelMedio@Label>:
+    font_size: self.height / 4
+    markup: True
+
 <Botao@Button>:
     font_size: self.height / 4
 
@@ -59,10 +63,42 @@
 <PedidosScreen@Screen>:
     BoxLayout:
         orientation: 'vertical'
+        padding: root.width * .02, root.height * .02
         BoxLayout:
-            orientation: 'horizontal'
-            Label:
+            LabelMedio:
                 text: "Cliente"
-            Label:
-                text: "[b]Nome do cliente[/b]"
-                markup: True
+            Spinner:
+                text: '---'
+                font_size: self.height / 4
+                values: app.lista_clientes
+
+        BoxLayout:
+            LabelMedio:
+                text: "Pedido"
+            Spinner:
+                text: '---'
+                font_size: self.height / 4
+                values: app.lista_cardapio
+
+        BoxLayout:
+            LabelMedio:
+                text: "Data de entrega"
+            TextInput:
+                font_size: self.height / 4
+                hint_text: app.getDate()
+                multiline: False
+                padding_x: self.width / 4
+                padding_y: self.height / 4
+
+        LabelMedio:
+            text: ""
+            font_size: self.height / 4
+            size_hint: (None, 1)
+
+        Botao:
+            text: "Gravar"
+            background_normal: ''
+            background_color: COLOR(RED)
+            spacing: 40
+            on_release: app.gravarPedido()
+

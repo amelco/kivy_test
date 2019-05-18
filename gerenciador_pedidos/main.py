@@ -1,7 +1,8 @@
 from kivy.app import App
+from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 
-from kivy.core.window import Window
+import datetime
 
 
 ############################################################################
@@ -11,6 +12,10 @@ class GerenciadorRoot(BoxLayout):
     def __init__(self, **kwargs):
         super(GerenciadorRoot, self).__init__(**kwargs)
         self.lista_telas = []
+
+    def getClientes(self):
+        print(self.lista_clientes)
+        return self.lista_clientes
 
     def changeScreen(self, tela):
         if self.ids.screen_manager.current not in self.lista_telas:
@@ -34,13 +39,24 @@ class GerenciadorApp(App):
         super(GerenciadorApp, self).__init__(**kwargs)
         # chama a funcao checaTecla sempre que uma tecla eh pressionada
         Window.bind(on_keyboard=self.checaTecla)
+        self.lista_clientes = "Ana Maria, Josélia, Fernanda, Carlos".split(',')
+        self.lista_cardapio = "Tradicional, Ameixa, Bolo de Maçã".split(',')
 
     def build(self):
-        return GerenciadorRoot()
+        gerenciador = GerenciadorRoot()
+        return gerenciador
 
     def checaTecla(self, window, key, *args):
         if key == 27:
             return self.root.botaoVoltar()
+
+    def getDate(self):
+        now = datetime.datetime.now()
+        return f'{now.day}/{now.month}/{now.year}'
+
+    def gravarPedido(self):
+        print("TODO: Gravar pedido!")
+        self.root.botaoVoltar()
 
 
 if __name__ == '__main__':
