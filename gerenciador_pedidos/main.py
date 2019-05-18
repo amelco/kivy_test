@@ -2,6 +2,12 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.button import Button
+from kivy.uix.label import Label
+from kivy.properties import ObjectProperty
+from kivy.factory import Factory
+
 import datetime
 import sqlite3
 
@@ -22,6 +28,8 @@ class GerenciadorRoot(BoxLayout):
 
         if tela == "anotar pedido":
             self.ids.screen_manager.current = "pedidos_screen"
+        elif tela == "listar pedidos":
+            self.ids.screen_manager.current = "listaPedidos_screen"
 
     def botaoVoltar(self):
         if self.lista_telas:
@@ -92,6 +100,48 @@ class GerenciadorApp(App):
                 lista_clientes.append(nome)
         conn.close()
         return lista_clientes
+
+    def getPedidos(self):
+        conn = sqlite3.connect('data/database.sqlite3')
+        cursor = conn.cursor()
+        cursor.execute("SELECT "
+                       "clientes.name, pedidos.pedido, pedidos.quantidade,"
+                       "pedidos.data_entrega "
+                       "FROM pedidos "
+                       "JOIN clientes ON clientes.id = pedidos.id_cliente")
+        resultados = cursor.fetchall()
+
+        cliente = []
+        pedido = []
+        qtd = []
+        data = []
+        for resultado in resultados:
+                cliente.append(resultado[0])
+                pedido.append(resultado[1])
+                qtd.append(resultado[2])
+                data.append(resultado[3])
+        conn.close()
+
+        string = (f"[b]Cliente             Pedido              "
+                  f"Qtd   Data                [/b]\n")
+        for i, v in enumerate(cliente):
+            string += (f"{cliente[i]:20.20}{pedido[i]:20.20}"
+                       f"{str(qtd[i]):6.6}{data[i]}\n"
+                       )
+
+        return string
+
+
+class MyWidget(FloatLayout):
+    box = ObjectProperty(None)
+
+    def on_box(self, *args):
+        for i in range(5):
+            self.box.add_widget(Button(text=str(i)))
+            self.box.add_widget(Label(text=str(i + 1)))
+
+
+Factory.register('MyWidget', cls=MyWidget)
 
 
 if __name__ == '__main__':

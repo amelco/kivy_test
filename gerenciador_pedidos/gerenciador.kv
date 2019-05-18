@@ -34,9 +34,9 @@
         PedidosScreen:
             id: pedidos_screen
             name: "pedidos_screen"
-        # ListaPedidosScreen:
-        #     id: listaPedidos_screen
-        #     name: "listaPedidos_screen"
+        ListaPedidosScreen:
+            id: listaPedidos_screen
+            name: "listaPedidos_screen"
 
 <StartScreen@Screen>:
     BoxLayout:
@@ -55,6 +55,7 @@
             on_release: app.root.changeScreen(self.text.lower())
         Botao:
             text: "Listar Pedidos"
+            on_release: app.root.changeScreen(self.text.lower())
         Botao:
             text: "Clientes"
         Botao:
@@ -110,8 +111,7 @@
             TextInput:
                 id: observacao
                 font_size: self.height / 4
-                hint_text: "Observação sobre o pedido"
-                text: "TESTE OBSERVACAO"
+                hint_text: "Insira alguma observação sobre o pedido"
                 # padding_x: self.width / 4
                 # padding_y: self.height / 4
 
@@ -127,7 +127,17 @@
             spacing: 40
             on_release: app.gravarPedido()
 
+<ListaPedidosScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        Label:
+            text: app.getPedidos()
+            markup: True
+            font_name: 'RobotoMono-Regular'
+            font_size: self.height / 30
+
 # <ListaPedidosScreen@Screen>:
-#     BoxLayout:
-#         orientation: 'vertical'
-#
+#     MyWidget:
+#         box: box
+#         BoxLayout:
+#             id: box
