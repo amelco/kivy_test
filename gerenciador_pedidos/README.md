@@ -4,4 +4,4 @@ Aplicativo Android desenvolvido em [Kivy](https://kivy.org/#home) para
 gerenciamento de pedidos recebidos por qualquer tipo de profissional autônomo.
 
 Cara atual do App:
-![alt text](/images/ss.png "Gerenciador de Pedidos")
+![alt text](https://github.com/amelco/kivy_test/tree/master/gerenciador_pedidos/images/ss.png "Gerenciador de Pedidos")
