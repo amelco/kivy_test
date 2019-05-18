@@ -10,9 +10,7 @@ import sqlite3
 class GerenciadorRoot(BoxLayout):
     """Root de todos os Widgets"""
 
-    def __init__(self, **kwargs):
-        super(GerenciadorRoot, self).__init__(**kwargs)
-        self.lista_telas = []
+    lista_telas = []
 
     def getClientes(self):
         print(self.lista_clientes)
@@ -45,8 +43,7 @@ class GerenciadorApp(App):
         self.lista_cardapio = "Tradicional, Ameixa, Bolo de Maçã".split(',')
 
     def build(self):
-        gerenciador = GerenciadorRoot()
-        return gerenciador
+        return GerenciadorRoot()
 
     def checaTecla(self, window, key, *args):
         if key == 27:
@@ -95,14 +92,6 @@ class GerenciadorApp(App):
                 lista_clientes.append(nome)
         conn.close()
         return lista_clientes
-
-
-############################################################################
-# class PedidosScreen(Screen):
-#     """docstring for PedidosScreen"""
-
-#     def __init__(self, **kwargs):
-#         super(PedidosScreen, self).__init__(**kwargs)
 
 
 if __name__ == '__main__':
