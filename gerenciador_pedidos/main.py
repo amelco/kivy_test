@@ -3,6 +3,7 @@ from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 
 import datetime
+import sqlite3
 
 
 ############################################################################
