@@ -11,6 +11,8 @@ from kivy.factory import Factory
 import datetime
 import sqlite3
 
+BD_name = 'database.sqlite3'
+
 
 ############################################################################
 class GerenciadorRoot(BoxLayout):
@@ -30,6 +32,8 @@ class GerenciadorRoot(BoxLayout):
             self.ids.screen_manager.current = "pedidos_screen"
         elif tela == "listar pedidos":
             self.ids.screen_manager.current = "listaPedidos_screen"
+        elif tela == "clientes":
+            self.ids.screen_manager.current = "clientes_screen"
 
     def botaoVoltar(self):
         if self.lista_telas:
@@ -64,7 +68,7 @@ class GerenciadorApp(App):
     def gravarPedido(self):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
 
-        conn = sqlite3.connect('data/database.sqlite3')
+        conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM clientes WHERE name = ?", (cliente,))
         id_cliente = cursor.fetchone()[0]
@@ -75,7 +79,7 @@ class GerenciadorApp(App):
         quantidade = self.root.ids.pedidos_screen.ids.quantidade.text
         obs = self.root.ids.pedidos_screen.ids.observacao.text
 
-        conn = sqlite3.connect('data/database.sqlite3')
+        conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO pedidos "
                        "(id_cliente,pedido,data_entrega,"
@@ -90,7 +94,7 @@ class GerenciadorApp(App):
         self.root.botaoVoltar()
 
     def getClientes(self):
-        conn = sqlite3.connect('data/database.sqlite3')
+        conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
         cursor.execute("SELECT name FROM clientes")
         resultados = cursor.fetchall()
@@ -102,11 +106,11 @@ class GerenciadorApp(App):
         return lista_clientes
 
     def getPedidos(self):
-        conn = sqlite3.connect('data/database.sqlite3')
+        conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
         cursor.execute("SELECT "
                        "clientes.name, pedidos.pedido, pedidos.quantidade,"
-                       "pedidos.data_entrega "
+                       "pedidos.data_entrega, pedidos.observacoes "
                        "FROM pedidos "
                        "JOIN clientes ON clientes.id = pedidos.id_cliente")
         resultados = cursor.fetchall()
@@ -115,19 +119,22 @@ class GerenciadorApp(App):
         pedido = []
         qtd = []
         data = []
+        obs = []
         for resultado in resultados:
                 cliente.append(resultado[0])
                 pedido.append(resultado[1])
                 qtd.append(resultado[2])
                 data.append(resultado[3])
+                obs.append(resultado[4])
         conn.close()
 
-        string = (f"[b]Cliente             Pedido              "
-                  f"Qtd   Data                [/b]\n")
+        string = (f"[b]Cliente             Pedido         "
+                  f"Qtd Data      Obs          [/b]\n\n")
         for i, v in enumerate(cliente):
-            string += (f"{cliente[i]:20.20}{pedido[i]:20.20}"
-                       f"{str(qtd[i]):6.6}{data[i]}\n"
+            string += (f"{cliente[i]:20.18}{pedido[i]:15.13}"
+                       f"{str(qtd[i]):4.2}{data[i]:10.8}{obs[i]}\n"
                        )
+            print(i)
 
         return string
 
