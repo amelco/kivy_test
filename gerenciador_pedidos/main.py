@@ -79,13 +79,32 @@ class GerenciadorApp(App):
         quantidade = self.root.ids.pedidos_screen.ids.quantidade.text
         obs = self.root.ids.pedidos_screen.ids.observacao.text
 
-        conn = sqlite3.connect(BD_name)
+        conn = sqlite3.connect(BD_name, isolation_level=None)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO pedidos "
                        "(id_cliente,pedido,data_entrega,"
                        "quantidade,observacoes) "
                        "VALUES (?, ?, ?, ?, ?)",
                        (id_cliente, pedido, data, quantidade, obs)
+                       )
+        conn.commit()
+        conn.close()
+
+        # print(query)
+        self.root.botaoVoltar()
+
+    def gravarCliente(self):
+        nome = self.root.ids.clientes_screen.ids.nome.text
+        endereco = self.root.ids.clientes_screen.ids.endereco.text
+        telefone = self.root.ids.clientes_screen.ids.telefone.text
+        email = self.root.ids.clientes_screen.ids.email.text
+
+        conn = sqlite3.connect(BD_name, isolation_level=None)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO clientes "
+                       "(name,endereco,telefone,email)"
+                       "VALUES (?, ?, ?, ?)",
+                       (nome, endereco, telefone, email)
                        )
         conn.commit()
         conn.close()

@@ -1,6 +1,7 @@
 #:import COLOR kivy.utils.get_color_from_hex
 #:set RED "#F94A69"
 #:set GREEN "#06A5AB"
+#:set micro sp(12)
 #:set small sp(14)
 #:set medium sp(18)
 #:set large sp(22)
@@ -17,6 +18,7 @@
 
 <Botao@Button>:
     font_size: small
+    spacing: 40
 
 <GerenciadorRoot>:
     orientation: 'vertical'
@@ -143,7 +145,7 @@
             text: app.getPedidos()
             markup: True
             font_name: 'RobotoMono-Regular'
-            font_size: sp(12)
+            font_size: micro
 
 <ClientesScreen@Screen>:
     BoxLayout:
@@ -155,7 +157,40 @@
             LabelMedio:
                 text: "Nome"
             TextInput:
-                id: data
+                id: nome
                 font_size: medium
                 text: ""
                 multiline: False
+        BoxLayout:
+            LabelMedio:
+                text: "Endereço"
+            TextInput:
+                id: endereco
+                font_size: medium
+                text: ""
+                multiline: False
+        BoxLayout:
+            LabelMedio:
+                text: "Telefone"
+            TextInput:
+                id: telefone
+                font_size: medium
+                text: ""
+                multiline: False
+        BoxLayout:
+            LabelMedio:
+                text: "E-mail"
+            TextInput:
+                id: email
+                font_size: medium
+                text: ""
+                multiline: False
+        LabelMedio:
+            text:""
+            size_hint: (None, 1)
+        BoxLayout:
+            Botao:
+                text: "Gravar"
+                background_normal: ''
+                background_color: COLOR(RED)
+                on_release: app.gravarCliente()
