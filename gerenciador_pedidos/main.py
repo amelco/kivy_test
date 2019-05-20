@@ -158,17 +158,5 @@ class GerenciadorApp(App):
         return string
 
 
-class MyWidget(FloatLayout):
-    box = ObjectProperty(None)
-
-    def on_box(self, *args):
-        for i in range(5):
-            self.box.add_widget(Button(text=str(i)))
-            self.box.add_widget(Label(text=str(i + 1)))
-
-
-Factory.register('MyWidget', cls=MyWidget)
-
-
 if __name__ == '__main__':
     GerenciadorApp().run()
