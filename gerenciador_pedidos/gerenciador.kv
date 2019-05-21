@@ -46,6 +46,9 @@
         ClientesScreen:
             id: clientes_screen
             name: "clientes_screen"
+        CardapioScreen:
+            id: cardapio_screen
+            name: "cardapio_screen"
 
 <StartScreen@Screen>:
     BoxLayout:
@@ -70,6 +73,7 @@
             on_release: app.root.changeScreen(self.text.lower())
         Botao:
             text: "Cardápio"
+            on_release: app.root.changeScreen(self.text.lower())
 
 <PedidosScreen@Screen>:
     BoxLayout:
@@ -91,7 +95,7 @@
                 id: pedido
                 text: '---'
                 font_size: medium
-                values: app.lista_cardapio
+                values: app.getProdutos()
 
         BoxLayout:
             LabelMedio:
@@ -194,3 +198,27 @@
                 background_normal: ''
                 background_color: COLOR(RED)
                 on_release: app.gravarCliente()
+
+<CardapioScreen@Screen>:
+    BoxLayout:
+        orientation: 'vertical'
+        WrappedLabel:
+            text: "[b]Cardápio[/b]"
+            font_size: large
+        BoxLayout:
+            LabelMedio:
+                text: "Produto"
+            TextInput:
+                id: produto
+                font_size: medium
+                text: ""
+                multiline: False
+        LabelMedio:
+            text:""
+            size_hint: (None, 3)
+        BoxLayout:
+            Botao:
+                text: "Gravar"
+                background_normal: ''
+                background_color: COLOR(RED)
+                on_release: app.gravarProduto()

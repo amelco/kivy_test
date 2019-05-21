@@ -2,14 +2,10 @@ from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.boxlayout import BoxLayout
 
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.button import Button
-from kivy.uix.label import Label
-from kivy.properties import ObjectProperty
-from kivy.factory import Factory
-
 import datetime
 import sqlite3
+
+# import pdb  # for debugging only
 
 BD_name = 'database.sqlite3'
 
@@ -34,6 +30,8 @@ class GerenciadorRoot(BoxLayout):
             self.ids.screen_manager.current = "listaPedidos_screen"
         elif tela == "clientes":
             self.ids.screen_manager.current = "clientes_screen"
+        elif tela == "cardápio":
+            self.ids.screen_manager.current = "cardapio_screen"
 
     def botaoVoltar(self):
         if self.lista_telas:
@@ -65,6 +63,21 @@ class GerenciadorApp(App):
         now = datetime.datetime.now()
         return f'{now.day}/{now.month}/{now.year}'
 
+    def gravarProduto(self):
+        produto = self.root.ids.cardapio_screen.ids.produto.text
+
+        conn = sqlite3.connect(BD_name, isolation_level=None)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO produtos "
+                       "(nome) "
+                       "VALUES (?)",
+                       (produto,)
+                       )
+        conn.commit()
+        conn.close()
+
+        self.root.botaoVoltar()
+
     def gravarPedido(self):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
 
@@ -82,7 +95,7 @@ class GerenciadorApp(App):
         conn = sqlite3.connect(BD_name, isolation_level=None)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO pedidos "
-                       "(id_cliente,pedido,data_entrega,"
+                       "(id_cliente,id_pedido,data_entrega,"
                        "quantidade,observacoes) "
                        "VALUES (?, ?, ?, ?, ?)",
                        (id_cliente, pedido, data, quantidade, obs)
@@ -124,24 +137,38 @@ class GerenciadorApp(App):
         conn.close()
         return lista_clientes
 
+    def getProdutos(self):
+        conn = sqlite3.connect(BD_name)
+        cursor = conn.cursor()
+        cursor.execute("SELECT nome FROM produtos")
+        resultados = cursor.fetchall()
+        lista_produtos = []
+        for resultado in resultados:
+            for nome in resultado:
+                lista_produtos.append(nome)
+        conn.close()
+        return lista_produtos
+
     def getPedidos(self):
         conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
-        cursor.execute("SELECT "
-                       "clientes.name, pedidos.pedido, pedidos.quantidade,"
-                       "pedidos.data_entrega, pedidos.observacoes "
-                       "FROM pedidos "
-                       "JOIN clientes ON clientes.id = pedidos.id_cliente")
+        query = ("SELECT "
+                 "clientes.name, produtos.nome, pedidos.quantidade,"
+                 "pedidos.data_entrega, pedidos.observacoes "
+                 "FROM pedidos "
+                 "JOIN clientes ON clientes.id = pedidos.id_cliente "
+                 "JOIN produtos ON pedidos.id_pedido = produtos.id")
+        cursor.execute(query)
         resultados = cursor.fetchall()
 
         cliente = []
-        pedido = []
+        produto = []
         qtd = []
         data = []
         obs = []
         for resultado in resultados:
                 cliente.append(resultado[0])
-                pedido.append(resultado[1])
+                produto.append(resultado[1])
                 qtd.append(resultado[2])
                 data.append(resultado[3])
                 obs.append(resultado[4])
@@ -150,11 +177,9 @@ class GerenciadorApp(App):
         string = (f"[b]Cliente             Pedido         "
                   f"Qtd Data      Obs          [/b]\n\n")
         for i, v in enumerate(cliente):
-            string += (f"{cliente[i]:20.18}{pedido[i]:15.13}"
+            string += (f"{cliente[i]:20.18}{produto[i]:15.13}"
                        f"{str(qtd[i]):4.2}{data[i]:10.8}{obs[i]}\n"
                        )
-            print(i)
-
         return string
 
 
