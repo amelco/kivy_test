@@ -1,6 +1,7 @@
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.label import Label
+from kivy.uix.button import Button
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.popup import Popup
 
@@ -88,14 +89,22 @@ class GerenciadorApp(App):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
         pedido = self.root.ids.pedidos_screen.ids.pedido.text
 
-        # print(cliente)
-        # if (cliente == "---" or pedido == "---"):
-        #     popup = Popup(title='Test popup',
-        #                   content=Label(text='Hello world'),
-        #                   auto_dismiss=False,
-        #                   size=(400, 400))
-        #     popup.open()
-        #     return
+        # Popup
+        conteudo = BoxLayout(orientation='vertical')
+        conteudo.add_widget(Label(text='Campos "Cliente" e "Pedido" devem '
+                                       'ser preechidos',
+                                  ))
+        closeBtn = Button(text='Fechar')
+        conteudo.add_widget(closeBtn)
+
+        if (cliente == "---" or pedido == "---"):
+            popup = Popup(title='Atenção',
+                          content=conteudo,
+                          size_hint=(None, None),
+                          size=(400, 220))
+            popup.open()
+            closeBtn.bind(on_press=popup.dismiss)
+            return
 
         conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
