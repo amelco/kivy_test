@@ -1,6 +1,8 @@
 from kivy.app import App
 from kivy.core.window import Window
+from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.popup import Popup
 
 import datetime
 import sqlite3
@@ -67,6 +69,9 @@ class GerenciadorApp(App):
     def gravarProduto(self):
         produto = self.root.ids.cardapio_screen.ids.produto.text
 
+        # Resetando os text inputs
+        self.root.ids.cardapio_screen.ids.produto.text = ""
+
         conn = sqlite3.connect(BD_name, isolation_level=None)
         cursor = conn.cursor()
         cursor.execute("INSERT INTO produtos "
@@ -83,6 +88,15 @@ class GerenciadorApp(App):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
         pedido = self.root.ids.pedidos_screen.ids.pedido.text
 
+        # print(cliente)
+        # if (cliente == "---" or pedido == "---"):
+        #     popup = Popup(title='Test popup',
+        #                   content=Label(text='Hello world'),
+        #                   auto_dismiss=False,
+        #                   size=(400, 400))
+        #     popup.open()
+        #     return
+
         conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM clientes WHERE name = ?", (cliente,))
@@ -97,6 +111,13 @@ class GerenciadorApp(App):
         data = self.root.ids.pedidos_screen.ids.data.text
         quantidade = self.root.ids.pedidos_screen.ids.quantidade.text
         obs = self.root.ids.pedidos_screen.ids.observacao.text
+
+        # Resetando os text inputs
+        self.root.ids.pedidos_screen.ids.cliente.text = "---"
+        self.root.ids.pedidos_screen.ids.pedido.text = "---"
+        self.root.ids.pedidos_screen.ids.data.text = self.getDate()
+        self.root.ids.pedidos_screen.ids.quantidade.text = "1"
+        self.root.ids.pedidos_screen.ids.observacao.text = ""
 
         conn = sqlite3.connect(BD_name, isolation_level=None)
         cursor = conn.cursor()
@@ -117,6 +138,12 @@ class GerenciadorApp(App):
         endereco = self.root.ids.clientes_screen.ids.endereco.text
         telefone = self.root.ids.clientes_screen.ids.telefone.text
         email = self.root.ids.clientes_screen.ids.email.text
+
+        # Resetando os text inputs
+        self.root.ids.clientes_screen.ids.nome.text = ""
+        self.root.ids.clientes_screen.ids.endereco.text = ""
+        self.root.ids.clientes_screen.ids.telefone.text = ""
+        self.root.ids.clientes_screen.ids.email.text = ""
 
         conn = sqlite3.connect(BD_name, isolation_level=None)
         cursor = conn.cursor()
