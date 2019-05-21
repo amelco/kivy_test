@@ -32,6 +32,9 @@
                 ActionButton:
                     text: "Settings"
                     on_press: app.open_settings()
+                ActionButton:
+                    text: "Exportar dados"
+                    on_press: app.exportDB()
 
     ScreenManager:
         id: screen_manager
@@ -104,7 +107,7 @@
                 id: data
                 font_size: medium
                 text: app.getDate()
-                multiline: False
+                multiline: True
                 # padding_x: self.width / 4
                 # padding_y: self.height / 4
 
@@ -115,9 +118,8 @@
                 id: quantidade
                 font_size: medium
                 text: '1'
-                multiline: False
-                # padding_x: self.width / 4
-                # padding_y: self.height / 4
+                multiline: True
+                on_text_validate: self.text = ""
 
         BoxLayout:
             LabelMedio:
@@ -164,7 +166,7 @@
                 id: nome
                 font_size: medium
                 text: ""
-                multiline: False
+                multiline: True
         BoxLayout:
             LabelMedio:
                 text: "Endereço"
@@ -172,7 +174,7 @@
                 id: endereco
                 font_size: medium
                 text: ""
-                multiline: False
+                multiline: True
         BoxLayout:
             LabelMedio:
                 text: "Telefone"
@@ -180,7 +182,7 @@
                 id: telefone
                 font_size: medium
                 text: ""
-                multiline: False
+                multiline: True
         BoxLayout:
             LabelMedio:
                 text: "E-mail"
@@ -188,7 +190,7 @@
                 id: email
                 font_size: medium
                 text: ""
-                multiline: False
+                multiline: True
         LabelMedio:
             text:""
             size_hint: (None, 1)
@@ -212,7 +214,7 @@
                 id: produto
                 font_size: medium
                 text: ""
-                multiline: False
+                multiline: True
         LabelMedio:
             text:""
             size_hint: (None, 3)

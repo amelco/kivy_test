@@ -4,6 +4,7 @@ from kivy.uix.boxlayout import BoxLayout
 
 import datetime
 import sqlite3
+from plyer import email
 
 # import pdb  # for debugging only
 
@@ -80,14 +81,19 @@ class GerenciadorApp(App):
 
     def gravarPedido(self):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
+        pedido = self.root.ids.pedidos_screen.ids.pedido.text
 
         conn = sqlite3.connect(BD_name)
         cursor = conn.cursor()
         cursor.execute("SELECT id FROM clientes WHERE name = ?", (cliente,))
         id_cliente = cursor.fetchone()[0]
         conn.close()
+        conn = sqlite3.connect(BD_name)
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM produtos WHERE nome = ?", (pedido,))
+        id_pedido = cursor.fetchone()[0]
+        conn.close()
 
-        pedido = self.root.ids.pedidos_screen.ids.pedido.text
         data = self.root.ids.pedidos_screen.ids.data.text
         quantidade = self.root.ids.pedidos_screen.ids.quantidade.text
         obs = self.root.ids.pedidos_screen.ids.observacao.text
@@ -98,7 +104,7 @@ class GerenciadorApp(App):
                        "(id_cliente,id_pedido,data_entrega,"
                        "quantidade,observacoes) "
                        "VALUES (?, ?, ?, ?, ?)",
-                       (id_cliente, pedido, data, quantidade, obs)
+                       (id_cliente, id_pedido, data, quantidade, obs)
                        )
         conn.commit()
         conn.close()
@@ -174,13 +180,23 @@ class GerenciadorApp(App):
                 obs.append(resultado[4])
         conn.close()
 
-        string = (f"[b]Cliente             Pedido         "
-                  f"Qtd Data      Obs          [/b]\n\n")
+        string = (f"[b]Cliente             Pedido                "
+                  f"Qtd Data        Obs          [/b]\n\n")
         for i, v in enumerate(cliente):
-            string += (f"{cliente[i]:20.18}{produto[i]:15.13}"
-                       f"{str(qtd[i]):4.2}{data[i]:10.8}{obs[i]}\n"
+            string += (f"{cliente[i]:20.18}{produto[i]:22.20}"
+                       f"{str(qtd[i]):4.2}{data[i]:12.10}{obs[i]}\n"
                        )
         return string
+
+    def exportDB(self):
+        con = sqlite3.connect('database.sqlite3')
+        dump = ""
+        for line in con.iterdump():
+            dump += line + "\n"
+        print(dump)
+        email.send(recipient="amelco.herman@gmail.com",
+                   subject="GerenciadorPedidosAPP_BD_dump",
+                   text=dump)
 
 
 if __name__ == '__main__':
