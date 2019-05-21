@@ -107,9 +107,6 @@
                 id: data
                 font_size: medium
                 text: app.getDate()
-                multiline: True
-                # padding_x: self.width / 4
-                # padding_y: self.height / 4
 
         BoxLayout:
             LabelMedio:
@@ -118,8 +115,6 @@
                 id: quantidade
                 font_size: medium
                 text: '1'
-                multiline: True
-                on_text_validate: self.text = ""
 
         BoxLayout:
             LabelMedio:
@@ -128,8 +123,6 @@
                 id: observacao
                 font_size: medium
                 hint_text: "Insira alguma observação sobre o pedido"
-                # padding_x: self.width / 4
-                # padding_y: self.height / 4
 
         LabelMedio:
             text: ""
@@ -166,7 +159,6 @@
                 id: nome
                 font_size: medium
                 text: ""
-                multiline: True
         BoxLayout:
             LabelMedio:
                 text: "Endereço"
@@ -174,7 +166,6 @@
                 id: endereco
                 font_size: medium
                 text: ""
-                multiline: True
         BoxLayout:
             LabelMedio:
                 text: "Telefone"
@@ -182,7 +173,6 @@
                 id: telefone
                 font_size: medium
                 text: ""
-                multiline: True
         BoxLayout:
             LabelMedio:
                 text: "E-mail"
@@ -190,7 +180,6 @@
                 id: email
                 font_size: medium
                 text: ""
-                multiline: True
         LabelMedio:
             text:""
             size_hint: (None, 1)
@@ -214,7 +203,6 @@
                 id: produto
                 font_size: medium
                 text: ""
-                multiline: True
         LabelMedio:
             text:""
             size_hint: (None, 3)
