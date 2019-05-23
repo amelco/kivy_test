@@ -9,9 +9,13 @@ import datetime
 import sqlite3
 from plyer import email
 
+BD_name = 'database.sqlite3'
+
 # import pdb  # for debugging only
 
-BD_name = 'database.sqlite3'
+# For develop only (Galaxy S7 creen ratio 9/16)
+from kivy.core.window import Window
+Window.size = (450, 800)
 
 
 ############################################################################
