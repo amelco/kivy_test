@@ -75,27 +75,11 @@ class GerenciadorApp(App):
         now = datetime.datetime.now()
         return f'{now.day}/{now.month}/{now.year}'
 
-    def gravarProduto(self):
-        produto = self.root.ids.cardapio_screen.ids.produto.text
-
-        # Resetando os text inputs
-        self.root.ids.cardapio_screen.ids.produto.text = ""
-
-        conn = sqlite3.connect(BD_name, isolation_level=None)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO produtos "
-                       "(nome) "
-                       "VALUES (?)",
-                       (produto,)
-                       )
-        conn.commit()
-        conn.close()
-
-        self.root.botaoVoltar()
-
     def popup_vazio(self, campos, mensagem):
         """
-        Mostra popup com 'mensagem' se algum item da lista 'campos' for vazio
+        Retorna True se algum item da lista 'campos' for vazio e mostra popup
+        contendo 'mensagem'.
+        Retorna False caso contrário.
         """
         # Popup
         conteudo = BoxLayout(orientation='vertical')
@@ -112,6 +96,27 @@ class GerenciadorApp(App):
                 popup.open()
                 closeBtn.bind(on_press=popup.dismiss)
                 return True
+        return False
+
+    def gravarProduto(self):
+        produto = self.root.ids.cardapio_screen.ids.produto.text
+
+        if self.popup_vazio([produto, ], 'Produto precisa ser preenchido'):
+            return
+
+        # Resetando os text inputs
+        self.root.ids.cardapio_screen.ids.produto.text = ""
+
+        conn = sqlite3.connect(BD_name, isolation_level=None)
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO produtos "
+                       "(nome) "
+                       "VALUES (?)",
+                       (produto,)
+                       )
+        conn.commit()
+        conn.close()
+        self.root.botaoVoltar()
 
     def gravarPedido(self):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
@@ -161,6 +166,9 @@ class GerenciadorApp(App):
         endereco = self.root.ids.clientes_screen.ids.endereco.text
         telefone = self.root.ids.clientes_screen.ids.telefone.text
         email = self.root.ids.clientes_screen.ids.email.text
+
+        if self.popup_vazio([nome, ], 'Nome precisa ser preenchido'):
+            return
 
         # Resetando os text inputs
         self.root.ids.clientes_screen.ids.nome.text = ""
