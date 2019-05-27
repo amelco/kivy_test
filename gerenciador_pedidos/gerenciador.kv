@@ -59,9 +59,14 @@
         padding: root.width * .02, root.height * .02
         spacing: min(root.width, root.height) * .02
 
-        WrappedLabel:
-            text: "[b]Gerenciador de Pedidos[/b]"
-            font_size: large
+        BoxLayout:
+            orientation: 'vertical'
+            WrappedLabel:
+                text: "[b]Gerenciador de Pedidos[/b]"
+                font_size: large
+            WrappedLabel:
+                text: "Edição de Aniversário =*"
+                font_size: small
 
         Botao:
             text: "Anotar Pedido"
@@ -79,6 +84,7 @@
             on_release: app.root.changeScreen(self.text.lower())
 
 <PedidosScreen@Screen>:
+    on_pre_enter: app.update(self.name)
     BoxLayout:
         orientation: 'vertical'
         padding: root.width * .02, root.height * .02
@@ -136,11 +142,13 @@
             on_release: app.gravarPedido()
 
 <ListaPedidosScreen@Screen>:
+    on_pre_enter: app.update(self.name)
     ScatterLayout:
         do_translation: False
         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
         rotation: 90.0
         Label:
+            id: lblPedidos
             text: app.getPedidos()
             markup: True
             font_name: 'RobotoMono-Regular'

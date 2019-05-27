@@ -9,13 +9,11 @@ import datetime
 import sqlite3
 from plyer import email
 
-BD_name = 'database.sqlite3'
-
 # import pdb  # for debugging only
-
 # For develop only (Galaxy S7 creen ratio 9/16)
-from kivy.core.window import Window
 Window.size = (450, 800)
+
+BD_name = 'database.sqlite3'
 
 
 ############################################################################
@@ -52,16 +50,22 @@ class GerenciadorRoot(BoxLayout):
 class GerenciadorApp(App):
     """Objeto App"""
 
-    # pedidos_screen = ObjectProperty(None)
-
     def __init__(self, **kwargs):
         super(GerenciadorApp, self).__init__(**kwargs)
         # chama a funcao checaTecla sempre que uma tecla eh pressionada
         Window.bind(on_keyboard=self.checaTecla)
         self.lista_cardapio = "Tradicional, Ameixa, Bolo de Maçã".split(',')
+        # self.lista_clientes = []
 
     def build(self):
-        return GerenciadorRoot()
+            return GerenciadorRoot()
+
+    def update(self, screen_name):
+        if screen_name == 'pedidos_screen':
+            self.root.ids.pedidos_screen.ids.cliente.values = self.getClientes()
+            self.root.ids.pedidos_screen.ids.pedido.values = self.getProdutos()
+        elif screen_name == 'listaPedidos_screen':
+            self.root.ids.listaPedidos_screen.ids.lblPedidos.text = self.getPedidos()
 
     def checaTecla(self, window, key, *args):
         if key == 27:
@@ -89,25 +93,31 @@ class GerenciadorApp(App):
 
         self.root.botaoVoltar()
 
+    def popup_vazio(self, campos, mensagem):
+        """
+        Mostra popup com 'mensagem' se algum item da lista 'campos' for vazio
+        """
+        # Popup
+        conteudo = BoxLayout(orientation='vertical')
+        conteudo.add_widget(Label(text=mensagem,))
+        closeBtn = Button(text='Fechar')
+        conteudo.add_widget(closeBtn)
+
+        for item in campos:
+            if (item == "---" or item == ""):
+                popup = Popup(title='Atenção',
+                              content=conteudo,
+                              size_hint=(None, None),
+                              size=(400, 220))
+                popup.open()
+                closeBtn.bind(on_press=popup.dismiss)
+                return True
+
     def gravarPedido(self):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
         pedido = self.root.ids.pedidos_screen.ids.pedido.text
 
-        # Popup
-        conteudo = BoxLayout(orientation='vertical')
-        conteudo.add_widget(Label(text='Campos "Cliente" e "Pedido" devem '
-                                       'ser preechidos',
-                                  ))
-        closeBtn = Button(text='Fechar')
-        conteudo.add_widget(closeBtn)
-
-        if (cliente == "---" or pedido == "---"):
-            popup = Popup(title='Atenção',
-                          content=conteudo,
-                          size_hint=(None, None),
-                          size=(400, 220))
-            popup.open()
-            closeBtn.bind(on_press=popup.dismiss)
+        if self.popup_vazio([cliente, pedido], 'Campos "Cliente" e "Pedido" devem ser preechidos'):
             return
 
         conn = sqlite3.connect(BD_name)
