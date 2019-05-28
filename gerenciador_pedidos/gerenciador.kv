@@ -135,12 +135,24 @@
             spacing: 40
             on_release: app.gravarPedido()
 
+# <ListaPedidosScreen@Screen>:
+#     on_pre_enter: app.update(self.name)
+#     ScatterLayout:
+#         do_translation: False
+#         pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+#         rotation: 90.0
+#         Label:
+#             id: lblPedidos
+#             text: app.getPedidos()
+#             markup: True
+#             font_name: 'RobotoMono-Regular'
+#             font_size: micro
+
 <ListaPedidosScreen@Screen>:
     on_pre_enter: app.update(self.name)
-    ScatterLayout:
-        do_translation: False
-        pos_hint: {'center_x': 0.5, 'center_y': 0.5}
-        rotation: 90.0
+    BoxLayout:
+        id: boxlayout
+        orientation: 'vertical'
         Label:
             id: lblPedidos
             text: app.getPedidos()

@@ -66,6 +66,12 @@ class GerenciadorApp(App):
             self.root.ids.pedidos_screen.ids.pedido.values = self.getProdutos()
         elif screen_name == 'listaPedidos_screen':
             self.root.ids.listaPedidos_screen.ids.lblPedidos.text = self.getPedidos()
+            self.addButton()
+
+    def addButton(self):
+        for i in range(1, 5):
+            self.root.ids.listaPedidos_screen.ids.boxlayout.add_widget(Button(text=f'test{i}'))
+        self.root.ids.listaPedidos_screen.ids.boxlayout.add_widget(Label(text=''))
 
     def checaTecla(self, window, key, *args):
         if key == 27:
