@@ -72,6 +72,8 @@ class GerenciadorApp(App):
         for i in range(1, 5):
             self.root.ids.listaPedidos_screen.ids.boxlayout.add_widget(Button(text=f'test{i}'))
         self.root.ids.listaPedidos_screen.ids.boxlayout.add_widget(Label(text=''))
+        for item in self.root.ids.listaPedidos_screen.ids:
+            print(item)
 
     def checaTecla(self, window, key, *args):
         if key == 27:
