@@ -9,6 +9,9 @@ import datetime
 import sqlite3
 from plyer import email
 
+# local modules
+import bd
+
 # import pdb  # for debugging only
 # For develop only (Galaxy S7 creen ratio 9/16)
 Window.size = (450, 800)
@@ -108,46 +111,22 @@ class GerenciadorApp(App):
 
     def gravarProduto(self):
         produto = self.root.ids.cardapio_screen.ids.produto.text
+        # Resetando os text inputs
+        self.root.ids.cardapio_screen.ids.produto.text = ""
 
         if self.popup_vazio([produto, ], 'Produto precisa ser preenchido'):
             return
 
-        # Resetando os text inputs
-        self.root.ids.cardapio_screen.ids.produto.text = ""
+        bd.insert("INSERT INTO produtos (nome) VALUES (?)", (produto,))
 
-        conn = sqlite3.connect(BD_name, isolation_level=None)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO produtos "
-                       "(nome) "
-                       "VALUES (?)",
-                       (produto,)
-                       )
-        conn.commit()
-        conn.close()
         self.root.botaoVoltar()
 
     def gravarPedido(self):
         cliente = self.root.ids.pedidos_screen.ids.cliente.text
         pedido = self.root.ids.pedidos_screen.ids.pedido.text
-
-        if self.popup_vazio([cliente, pedido], 'Campos "Cliente" e "Pedido" devem ser preechidos'):
-            return
-
-        conn = sqlite3.connect(BD_name)
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM clientes WHERE name = ?", (cliente,))
-        id_cliente = cursor.fetchone()[0]
-        conn.close()
-        conn = sqlite3.connect(BD_name)
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM produtos WHERE nome = ?", (pedido,))
-        id_pedido = cursor.fetchone()[0]
-        conn.close()
-
         data = self.root.ids.pedidos_screen.ids.data.text
         quantidade = self.root.ids.pedidos_screen.ids.quantidade.text
         obs = self.root.ids.pedidos_screen.ids.observacao.text
-
         # Resetando os text inputs
         self.root.ids.pedidos_screen.ids.cliente.text = "---"
         self.root.ids.pedidos_screen.ids.pedido.text = "---"
@@ -155,18 +134,18 @@ class GerenciadorApp(App):
         self.root.ids.pedidos_screen.ids.quantidade.text = "1"
         self.root.ids.pedidos_screen.ids.observacao.text = ""
 
-        conn = sqlite3.connect(BD_name, isolation_level=None)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO pedidos "
+        if self.popup_vazio([cliente, pedido], 'Campos "Cliente" e "Pedido" devem ser preechidos'):
+            return
+
+        id_cliente = bd.select_one("SELECT id FROM clientes WHERE name = ?", (cliente,))
+        id_pedido = bd.select_one("SELECT id FROM produtos WHERE nome = ?", (pedido,))
+
+        bd.insert("INSERT INTO pedidos "
                        "(id_cliente,id_pedido,data_entrega,"
                        "quantidade,observacoes) "
                        "VALUES (?, ?, ?, ?, ?)",
-                       (id_cliente, id_pedido, data, quantidade, obs)
-                       )
-        conn.commit()
-        conn.close()
+                       (id_cliente, id_pedido, data, quantidade, obs))
 
-        # print(query)
         self.root.botaoVoltar()
 
     def gravarCliente(self):
@@ -174,52 +153,27 @@ class GerenciadorApp(App):
         endereco = self.root.ids.clientes_screen.ids.endereco.text
         telefone = self.root.ids.clientes_screen.ids.telefone.text
         email = self.root.ids.clientes_screen.ids.email.text
-
-        if self.popup_vazio([nome, ], 'Nome precisa ser preenchido'):
-            return
-
         # Resetando os text inputs
         self.root.ids.clientes_screen.ids.nome.text = ""
         self.root.ids.clientes_screen.ids.endereco.text = ""
         self.root.ids.clientes_screen.ids.telefone.text = ""
         self.root.ids.clientes_screen.ids.email.text = ""
 
-        conn = sqlite3.connect(BD_name, isolation_level=None)
-        cursor = conn.cursor()
-        cursor.execute("INSERT INTO clientes "
+        if self.popup_vazio([nome, ], 'Nome precisa ser preenchido'):
+            return
+
+        bd.insert("INSERT INTO clientes "
                        "(name,endereco,telefone,email)"
                        "VALUES (?, ?, ?, ?)",
-                       (nome, endereco, telefone, email)
-                       )
-        conn.commit()
-        conn.close()
+                       (nome, endereco, telefone, email))
 
-        # print(query)
         self.root.botaoVoltar()
 
     def getClientes(self):
-        conn = sqlite3.connect(BD_name)
-        cursor = conn.cursor()
-        cursor.execute("SELECT name FROM clientes")
-        resultados = cursor.fetchall()
-        lista_clientes = []
-        for resultado in resultados:
-            for nome in resultado:
-                lista_clientes.append(nome)
-        conn.close()
-        return lista_clientes
+        return bd.select_many("SELECT name FROM clientes")
 
     def getProdutos(self):
-        conn = sqlite3.connect(BD_name)
-        cursor = conn.cursor()
-        cursor.execute("SELECT nome FROM produtos")
-        resultados = cursor.fetchall()
-        lista_produtos = []
-        for resultado in resultados:
-            for nome in resultado:
-                lista_produtos.append(nome)
-        conn.close()
-        return lista_produtos
+        return bd.select_many("SELECT nome FROM produtos")
 
     def getPedidos(self):
         conn = sqlite3.connect(BD_name)
